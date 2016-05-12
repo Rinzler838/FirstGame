@@ -4,12 +4,16 @@ namespace FirstGame
 {
 	public class Player
 	{
-		public Player ()
-		{
 			private int score;
 			private bool active;
 			private int health
-			public Animation PlayerAnimation;
+			private Animation PlayerAnimation;
+
+		// Animation representing the player
+		public Animation PlayerAnimation;
+		{
+			get { returnplayerAnimation; }
+			set { playerAnimation= value; }
 		}
 
 		// Animation representing the player
@@ -30,18 +34,6 @@ namespace FirstGame
 		{
 			get { return health; }
 			set { health = value; }
-		
-
-		// Get the width of the player ship
-		public int Width
-		{
-			get { return PlayerTexture.FrameWidth; }
-		}
-
-		// Get the height of the player ship
-		public int Height
-		{
-			get { return PlayerTexture.FrameHeight; }
 		}
 
 		public int Score 
@@ -50,19 +42,55 @@ namespace FirstGame
 			set { score = value; }
 		}
 
+		// Get the width of the player ship
+		public int Width
+		{
+			get { return PlayerAnimation.FrameWidth; }
+		}
+
+		// Get the height of the player ship
+		public int Height
+		{
+			get { return PlayerAnimation.FrameHeight; }
+		}
+
 		public void Initialize(Texture2D texture, Vector2 position)
 		{
-			this.Active = true;
-			this.Health = 100;
+			this.active = true;
+			this.health = 100;
 			this.score = 0;
 			this.PlayerTexture = texture;
 			this.Position = position;
-			this.PlayAnimation = animation;
 		}
 
-		public void Update()
+		// Initialize the player
+		public void Initialize(Animation animation, Vector2 position)
 		{
+			this.playerAnimation = animation;
 
+			// Set the starting position of the player around the middle of the screen and to the back
+			this.position = position;
+
+			// Set the player to be active
+			this.active = true;
+
+			// Set the player health
+			this.health = 100;
+
+			this.score = 0;
+		}
+
+		// Update the player animation
+		public void Update(GameTime gameTime)
+		{
+			PlayerAnimation.Position = Position;
+			PlayerAnimation.Update(gameTime);
+		}
+
+		// Draw the player
+		public void Draw(SpriteBatch spriteBatch)
+		{
+			PlayerAnimation.Draw(spriteBatch);
 		}
 
 		public void Draw(SpriteBatch spriteBatch)

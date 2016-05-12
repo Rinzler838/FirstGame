@@ -195,8 +195,14 @@ namespace FirstGame
 				(int)(FrameHeight * scale));
 		}
 
-		public void Draw()
+		// Draw the Animation Strip
+		public void Draw(SpriteBatch spriteBatch)
 		{
+			// Only draw the animation when we are active
+			if (Active)
+			{
+				spriteBatch.Draw(spriteStrip, destinationRect, sourceRect, color);
+			}
 		}
 	}
 }
