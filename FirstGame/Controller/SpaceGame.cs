@@ -126,10 +126,7 @@ namespace FirstGame.Controller
 			currentKeyboardState = Keyboard.GetState();
 			currentGamePadState = GamePad.GetState(PlayerIndex.One);
 
-
 			//Update the player
-			UpdatePlayer(gameTime);
-
 			UpdatePlayer (gameTime);
             
 			base.Update (gameTime);

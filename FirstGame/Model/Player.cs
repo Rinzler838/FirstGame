@@ -9,6 +9,7 @@ namespace FirstGame
 			private int score;
 			private bool active;
 			private int health
+			public Animation PlayerAnimation;
 		}
 
 		// Animation representing the player
@@ -34,13 +35,13 @@ namespace FirstGame
 		// Get the width of the player ship
 		public int Width
 		{
-			get { return PlayerTexture.Width; }
+			get { return PlayerTexture.FrameWidth; }
 		}
 
 		// Get the height of the player ship
 		public int Height
 		{
-			get { return PlayerTexture.Height; }
+			get { return PlayerTexture.FrameHeight; }
 		}
 
 		public int Score 
@@ -56,6 +57,7 @@ namespace FirstGame
 			this.score = 0;
 			this.PlayerTexture = texture;
 			this.Position = position;
+			this.PlayAnimation = animation;
 		}
 
 		public void Update()
