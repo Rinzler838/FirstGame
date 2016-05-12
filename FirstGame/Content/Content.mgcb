@@ -13,11 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin ShooterContent/Animation/.DS_Store
-/importer:
-/processor:
-/build:ShooterContent/Animation/.DS_Store
-
 #begin ShooterContent/Animation/explosion.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -59,11 +54,6 @@
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
 /build:ShooterContent/Font/gameFont.spritefont
-
-#begin ShooterContent/Sound/.DS_Store
-/importer:
-/processor:
-/build:ShooterContent/Sound/.DS_Store
 
 #begin ShooterContent/Sound/explosion.wav
 /importer:WavImporter
@@ -184,9 +174,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:ShooterContent/Texture/player.png
-
-#begin ShooterContent/.DS_Store
-/importer:
-/processor:
-/build:ShooterContent/.DS_Store
 

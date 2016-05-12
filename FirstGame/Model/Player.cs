@@ -6,7 +6,9 @@ namespace FirstGame
 	{
 		public Player ()
 		{
-			
+			private int score;
+			private bool active;
+			private int health
 		}
 
 		// Animation representing the player
@@ -18,11 +20,16 @@ namespace FirstGame
 		// State of the player
 		public bool Active
 		{
-
+			get { return active; }
+			set { active = value; }
 		}
 
 		// Amount of hit points that player has
 		public int Health;
+		{
+			get { return health; }
+			set { health = value; }
+		
 
 		// Get the width of the player ship
 		public int Width
@@ -38,8 +45,8 @@ namespace FirstGame
 
 		public int Score 
 		{
-			get { return Score; }
-			set { Score = value; }
+			get { return score; }
+			set { score = value; }
 		}
 
 		public void Initialize(Texture2D texture, Vector2 position)
