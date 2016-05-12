@@ -1,18 +1,18 @@
 ﻿using System;
 
-namespace FirstGame
+namespace FirstGame.Model
 {
 	public class Player
 	{
-			private int score;
-			private bool active;
-			private int health
-			private Animation PlayerAnimation;
+		private int score;
+		private bool active;
+		private int health;
+		private Animation playerAnimation;
 
 		// Animation representing the player
-		public Animation PlayerAnimation;
+		public Animation PlayerAnimation
 		{
-			get { returnplayerAnimation; }
+			get { return playerAnimation; }
 			set { playerAnimation= value; }
 		}
 
@@ -30,7 +30,7 @@ namespace FirstGame
 		}
 
 		// Amount of hit points that player has
-		public int Health;
+		public int Health
 		{
 			get { return health; }
 			set { health = value; }

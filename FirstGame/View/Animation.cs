@@ -5,8 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-
-namespace FirstGame
+namespace FirstGame.View
 {
 	public class Animation
 	{
@@ -23,8 +22,8 @@ namespace FirstGame
 
 		public float Scale
 		{
-				get { return scale; }
-				set { scale = value; }
+			get { return scale; }
+			set { scale = value; }		
 		}
 
 		// The time since we last updated the frame

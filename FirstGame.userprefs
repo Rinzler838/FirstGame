@@ -1,10 +1,11 @@
 ﻿<Properties StartupItem="FirstGame/FirstGame.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="FirstGame/Controller/SpaceGame.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="FirstGame/View/Animation.cs">
     <Files>
-      <File FileName="FirstGame/Model/Player.cs" Line="56" Column="4" />
-      <File FileName="FirstGame/Controller/SpaceGame.cs" Line="17" Column="3" />
-      <File FileName="FirstGame/Controller/Program.cs" Line="1" Column="1" />
+      <File FileName="FirstGame/Model/Player.cs" Line="3" Column="26" />
+      <File FileName="FirstGame/Controller/SpaceGame.cs" Line="71" Column="74" />
+      <File FileName="FirstGame/View/Animation.cs" Line="21" Column="11" />
+      <File FileName="FirstGame/Controller/Program.cs" Line="16" Column="31" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
