@@ -14,21 +14,28 @@ namespace FirstGame.Controller
 	/// </summary>
 	public class SpaceGame : Game
 	{
-		GraphicsDeviceManager graphics;
-		SpriteBatch spriteBatch;
+		private GraphicsDeviceManager graphics;
+		private SpriteBatch spriteBatch;
 
 		private Player player;
 
 		// Keyboard states used to determine key presses
-		KeyboardState currentKeyboardState;
-		KeyboardState previousKeyboardState;
+		private KeyboardState currentKeyboardState;
+		private KeyboardState previousKeyboardState;
 
 		// Gamepad states used to determine button presses
-		GamePadState currentGamePadState;
-		GamePadState previousGamePadState; 
+		private GamePadState currentGamePadState;
+		private GamePadState previousGamePadState; 
 
 		// A movement speed for the player
-		float playerMoveSpeed;
+		private float playerMoveSpeed;
+
+		// Image used to display the static background
+		private Texture2D mainBackground;
+
+		// Parallaxing Layers
+		private ParallaxingBackground bgLayer1;
+		private ParallaxingBackground bgLayer2;
 
 		public SpaceGame ()
 		{
@@ -49,7 +56,11 @@ namespace FirstGame.Controller
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 8.0f;
+			playerMoveSpeed = 4.5f;
+
+			//Initialize background layers
+			bgLayer1 = new ParallaxingBackground();
+			bgLayer2 = new ParallaxingBackground();
             
 			base.Initialize ();
 		}
@@ -67,12 +78,18 @@ namespace FirstGame.Controller
 
 			// Load the player resources
 			Animation playerAnimation = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("ShooterContent/Animation/ImportedGerald");
-			playerAnimation.Initialize(playerTexture, Vector2.Zero, 50, 60, 6, 100, Color.White, 1f, true);
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/ImportedMetroid");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 78, 86, 20, 45, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 			player.Initialize(playerAnimation, playerPosition);
+
+			// Load the parallaxing background
+			bgLayer1.Initialize(Content, "Texture/bgLayer1", GraphicsDevice.Viewport.Width, -1);
+			bgLayer2.Initialize(Content, "Texture/bgLayer2", GraphicsDevice.Viewport.Width, -2);
+
+			mainBackground = Content.Load<Texture2D>("Texture/mainbackground");
 		}
 
 		private void UpdatePlayer(GameTime gameTime)
@@ -136,6 +153,10 @@ namespace FirstGame.Controller
 
 			//Update the player
 			UpdatePlayer (gameTime);
+
+			// Update the parallaxing background
+			bgLayer1.Update();
+			bgLayer2.Update();
             
 			base.Update (gameTime);
 		}
@@ -146,11 +167,17 @@ namespace FirstGame.Controller
 		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void Draw (GameTime gameTime)
 		{
-			graphics.GraphicsDevice.Clear (Color.CornflowerBlue);
+			graphics.GraphicsDevice.Clear (Color.White);
             
 			//TODO: Add your drawing code here
 			// Start drawing
 			spriteBatch.Begin();
+
+			spriteBatch.Draw(mainBackground, Vector2.Zero, Color.White);
+
+			// Draw the moving background
+			bgLayer1.Draw(spriteBatch);
+			bgLayer2.Draw(spriteBatch);
 
 			// Draw the Player
 			player.Draw(spriteBatch);

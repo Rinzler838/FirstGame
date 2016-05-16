@@ -1,5 +1,12 @@
 ﻿using System;
 
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Storage;
+using Microsoft.Xna.Framework.Input;
+using FirstGame.Model;
+using FirstGame.View;
+
 namespace FirstGame.Model
 {
 	public class Player
@@ -69,7 +76,7 @@ namespace FirstGame.Model
 			this.playerAnimation = animation;
 
 			// Set the starting position of the player around the middle of the screen and to the back
-			this.position = position;
+			this.Position = position;
 
 			// Set the player to be active
 			this.active = true;
@@ -91,11 +98,6 @@ namespace FirstGame.Model
 		public void Draw(SpriteBatch spriteBatch)
 		{
 			PlayerAnimation.Draw(spriteBatch);
-		}
-
-		public void Draw(SpriteBatch spriteBatch)
-		{ 
-			spriteBatch.Draw(PlayerTexture, Position, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
 		}
 	}
 }

@@ -12,24 +12,23 @@ namespace FirstGame.View
 		// The image representing the collection of images used for animation
 		private Texture2D spriteStrip;
 
-		public Texture2D SpriteStrip
-		{
+		public Texture2D SpriteStrip {
 			get { return spriteStrip; }
 			set { spriteStrip = value; }
-
+		}
 		// The scale used to display the sprite strip
 		private float scale;
 
 		public float Scale
 		{
 			get { return scale; }
-			set { scale = value; }		
+			set { scale = value; }	
 		}
 
 		// The time since we last updated the frame
 		private int elapsedTime;
 
-		public int elapsedTime
+		public int ElapsedTime
 		{
 			get { return elapsedTime; }
 			set { elapsedTime = value; }
@@ -37,7 +36,7 @@ namespace FirstGame.View
 		// The time we display a frame until the next one
 		private int frameTime;
 
-		public int frameTime
+		public int FrameTime
 		{
 			get { return frameTime; }
 			set { frameTime = value; }
@@ -46,7 +45,7 @@ namespace FirstGame.View
 		// The number of frames that the animation contains
 		private int frameCount;
 
-		public int frameCount
+		public int FrameCount
 		{
 			get { return frameCount; }
 			set { frameCount = value; }
@@ -56,7 +55,7 @@ namespace FirstGame.View
 		// The index of the current frame we are displaying
 		private int currentFrame;
 
-		public int currentFrame
+		public int CurrentFrame
 		{
 			get { return currentFrame; }
 			set { currentFrame = value; }
@@ -66,7 +65,7 @@ namespace FirstGame.View
 		// The color of the frame we will be displaying
 		private Color color;
 
-		public Color color
+		public Color Color
 		{
 			get { return color; }
 			set { color = value; }
