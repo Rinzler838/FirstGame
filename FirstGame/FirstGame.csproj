@@ -52,7 +52,7 @@
     <Compile Include="Controller\SpaceGame.cs" />
     <Compile Include="View\Animation.cs" />
     <Compile Include="View\ParallaxingBackground.cs" />
-    <Compile Include="Model\Enemies.cs" />
+    <Compile Include="Model\Enemy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />
