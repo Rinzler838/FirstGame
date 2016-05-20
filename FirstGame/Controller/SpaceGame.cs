@@ -49,6 +49,16 @@ namespace FirstGame.Controller
 		// A random number generator
 		Random random;
 
+		Texture2D projectileTexture;
+		List<Projectile> projectiles;
+
+		// The rate of fire of the player laser
+		TimeSpan fireTime;
+		TimeSpan previousFireTime;
+
+		Texture2D explosionTexture;
+		List<Animation> explosions;
+
 
 		public SpaceGame ()
 		{
@@ -86,6 +96,13 @@ namespace FirstGame.Controller
 
 			// Initialize our random number generator
 			random = new Random();
+
+			projectiles = new List<Projectile>();
+
+			// Set the laser to fire every quarter second
+			fireTime = TimeSpan.FromSeconds(.15f);
+
+			explosions = new List<Animation>();
             
 			base.Initialize ();
 		}
@@ -103,20 +120,24 @@ namespace FirstGame.Controller
 
 			// Load the player resources
 			Animation playerAnimation = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("Animation/ImportedCharging");
-			playerAnimation.Initialize(playerTexture, Vector2.Zero, 36, 44, 20, 45, Color.White, 1f, true);
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/ImportedSpinJump");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 93, 114, 16, 20, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 			player.Initialize(playerAnimation, playerPosition);
 
 			// Load the parallaxing background
-			bgLayer1.Initialize(Content, "Texture/ImportedBGOne", GraphicsDevice.Viewport.Width, -1);
-			bgLayer2.Initialize(Content, "Texture/ImportedBGTwo", GraphicsDevice.Viewport.Width, -2);
+			bgLayer1.Initialize(Content, "Texture/ImportedBGTwo", GraphicsDevice.Viewport.Width, -1);
+			bgLayer2.Initialize(Content, "Texture/ImportedBGOne", GraphicsDevice.Viewport.Width, -2);
 
-			mainBackground = Content.Load<Texture2D>("Texture/ImportedStatic");
+			mainBackground = Content.Load<Texture2D>("Texture/ImportedMain");
 
 			enemyTexture = Content.Load<Texture2D>("Animation/ImportedMetroid");
+
+			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLaser");
+
+			explosionTexture = Content.Load<Texture2D>("Animation/ImportedExplode");
 		}
 
 		private void UpdatePlayer(GameTime gameTime)
@@ -138,20 +159,30 @@ namespace FirstGame.Controller
 			{
 				player.Position.X += playerMoveSpeed;
 			}
-//			if (currentKeyboardState.IsKeyDown(Keys.Up) ||
-//				currentGamePadState.DPad.Up == ButtonState.Pressed)
-//			{
-//				player.Position.Y -= playerMoveSpeed;
-//			}
-//			if (currentKeyboardState.IsKeyDown(Keys.Down) ||
-//				currentGamePadState.DPad.Down == ButtonState.Pressed)
-//			{
-//				player.Position.Y += playerMoveSpeed;
-//			}
+			if (currentKeyboardState.IsKeyDown(Keys.Up) ||
+				currentGamePadState.DPad.Up == ButtonState.Pressed)
+			{
+				player.Position.Y -= playerMoveSpeed;
+			}
+			if (currentKeyboardState.IsKeyDown(Keys.Down) ||
+				currentGamePadState.DPad.Down == ButtonState.Pressed)
+			{
+				player.Position.Y += playerMoveSpeed;
+			}
 
 			// Make sure that the player does not go out of bounds
 			player.Position.X = MathHelper.Clamp(player.Position.X, 0,GraphicsDevice.Viewport.Width - player.Width);
 			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0,GraphicsDevice.Viewport.Height - player.Height);
+
+			// Fire only every interval we set as the fireTime
+			if (gameTime.TotalGameTime - previousFireTime > fireTime)
+			{
+				// Reset our current time
+				previousFireTime = gameTime.TotalGameTime;
+
+				// Add the projectile, but add it to the front and center of the player
+				AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+			}
 		}
 
 		/// <summary>
@@ -190,6 +221,12 @@ namespace FirstGame.Controller
 
 			// Update the collision
 			UpdateCollision();
+
+			// Update the projectiles
+			UpdateProjectiles();
+
+			// Update the explosions
+			UpdateExplosions(gameTime);
             
 			base.Update (gameTime);
 		}
@@ -233,6 +270,29 @@ namespace FirstGame.Controller
 				}
 
 			}
+
+			// Projectile vs Enemy Collision
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				for (int j = 0; j < enemies.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangle1 = new Rectangle((int)projectiles[i].Position.X - 
+						projectiles[i].Width / 2,(int)projectiles[i].Position.Y - 
+						projectiles[i].Height / 2,projectiles[i].Width, projectiles[i].Height);
+
+					rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+						(int)enemies[j].Position.Y - enemies[j].Height / 2,
+						enemies[j].Width, enemies[j].Height);
+
+					// Determine if the two objects collided with each other
+					if (rectangle1.Intersects(rectangle2))
+					{
+						enemies[j].Health -= projectiles[i].Damage;
+						projectiles[i].Active = false;
+					}
+				}
+			}
 		}
 
 		private void AddEnemy()
@@ -274,8 +334,54 @@ namespace FirstGame.Controller
 
 				if (enemies[i].Active == false)
 				{
+					// If not active and health <= 0
+					if (enemies[i].Health <= 0)
+					{
+						// Add an explosion
+						AddExplosion(enemies[i].Position);
+					}
 					enemies.RemoveAt(i);
 				} 
+			}
+		}
+
+		private void AddProjectile(Vector2 position)
+		{
+			Projectile projectile = new Projectile(); 
+			projectile.Initialize(GraphicsDevice.Viewport, projectileTexture,position); 
+			projectiles.Add(projectile);
+		}
+
+		private void UpdateProjectiles()
+		{
+			// Update the Projectiles
+			for (int i = projectiles.Count - 1; i >= 0; i--) 
+			{
+				projectiles[i].Update();
+
+				if (projectiles[i].Active == false)
+				{
+					projectiles.RemoveAt(i);
+				} 
+			}
+		}
+
+		private void AddExplosion(Vector2 position)
+		{
+			Animation explosion = new Animation();
+			explosion.Initialize(explosionTexture,position, 160, 160, 5, 45, Color.White, 1f,false);
+			explosions.Add(explosion);
+		}
+
+		private void UpdateExplosions(GameTime gameTime)
+		{
+			for (int i = explosions.Count - 1; i >= 0; i--)
+			{
+				explosions[i].Update(gameTime);
+				if (explosions[i].Active == false)
+				{
+					explosions.RemoveAt(i);
+				}
 			}
 		}
 
@@ -303,11 +409,23 @@ namespace FirstGame.Controller
 				enemies[i].Draw(spriteBatch);
 			}
 
+			// Draw the Projectiles
+			for (int i = 0; i < projectiles.Count; i++)
+			{
+				projectiles[i].Draw(spriteBatch);
+			}
+
 			// Draw the Player
 			player.Draw(spriteBatch);
 
 			// Stop drawing
 			spriteBatch.End();
+
+			// Draw the explosions
+			for (int i = 0; i < explosions.Count; i++)
+			{
+				explosions[i].Draw(spriteBatch);
+			}
             
 			base.Draw (gameTime);
 		}
