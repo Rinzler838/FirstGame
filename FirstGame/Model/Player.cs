@@ -11,7 +11,7 @@ namespace FirstGame.Model
 {
 	public class Player
 	{
-		private int score;
+		private long score;
 		private bool active;
 		private int health;
 		private Animation playerAnimation;
@@ -43,7 +43,7 @@ namespace FirstGame.Model
 			set { health = value; }
 		}
 
-		public int Score 
+		public long Score 
 		{
 			get { return score; }
 			set { score = value; }
@@ -82,9 +82,9 @@ namespace FirstGame.Model
 			this.active = true;
 
 			// Set the player health
-			this.health = 100;
+			this.health = 100; //100
 
-			this.score = 0;
+			this.score = 0; //0
 		}
 
 		// Update the player animation

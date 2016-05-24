@@ -52,9 +52,9 @@ namespace FirstGame
 
 			Active = true;
 
-			Damage = 2;
+			Damage = 2; //2
 
-			projectileMoveSpeed = 20f;
+			projectileMoveSpeed = 20; //20
 		}
 
 		public void Update()

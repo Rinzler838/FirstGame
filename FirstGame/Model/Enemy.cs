@@ -58,17 +58,17 @@ namespace FirstGame
 
 
 			// Set the health of the enemy
-			Health = 10;
+			Health = 10; //10
 
 			// Set the amount of damage the enemy can do
-			Damage = 10;
+			Damage = 10; //10
 
 			// Set how fast the enemy moves
-			enemyMoveSpeed = 6f;
+			enemyMoveSpeed = 10f; //6
 
 
 			// Set the score value of the enemy
-			Value = 100;
+			Value = 1234567890; //100
 
 		}
 

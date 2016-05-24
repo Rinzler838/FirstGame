@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 using System.Collections.Generic;
 using FirstGame.Model;
 using FirstGame.View;
@@ -59,6 +61,20 @@ namespace FirstGame.Controller
 		Texture2D explosionTexture;
 		List<Animation> explosions;
 
+		// The sound that is played when a laser is fired
+		SoundEffect laserSound;
+
+		// The sound used when the player or an enemy dies
+		SoundEffect explosionSound;
+
+		// The music played during gameplay
+		Song gameplayMusic;
+
+		//Number that holds the player score
+		long score;
+		// The font used to display UI elements
+		SpriteFont font;
+
 
 		public SpaceGame ()
 		{
@@ -79,7 +95,7 @@ namespace FirstGame.Controller
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 4.5f;
+			playerMoveSpeed = 10f; //4.5
 
 			//Initialize background layers
 			bgLayer1 = new ParallaxingBackground();
@@ -103,6 +119,9 @@ namespace FirstGame.Controller
 			fireTime = TimeSpan.FromSeconds(.15f);
 
 			explosions = new List<Animation>();
+
+			//Set player's score to zero
+			score = 0;
             
 			base.Initialize ();
 		}
@@ -128,16 +147,44 @@ namespace FirstGame.Controller
 			player.Initialize(playerAnimation, playerPosition);
 
 			// Load the parallaxing background
-			bgLayer1.Initialize(Content, "Texture/ImportedBGTwo", GraphicsDevice.Viewport.Width, -1);
-			bgLayer2.Initialize(Content, "Texture/ImportedBGOne", GraphicsDevice.Viewport.Width, -2);
+			bgLayer1.Initialize(Content, "Texture/ImportedBGTwo", GraphicsDevice.Viewport.Width, -15); //-1
+			bgLayer2.Initialize(Content, "Texture/ImportedBGOne", GraphicsDevice.Viewport.Width, -25); //-2
 
 			mainBackground = Content.Load<Texture2D>("Texture/ImportedMain");
 
 			enemyTexture = Content.Load<Texture2D>("Animation/ImportedMetroid");
 
-			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLaser");
+			projectileTexture = Content.Load<Texture2D>("Texture/ImportedMissile");
 
 			explosionTexture = Content.Load<Texture2D>("Animation/ImportedExplode");
+
+			// Load the music
+			gameplayMusic = Content.Load<Song>("Sound/ridley");
+
+			// Load the laser and explosion sound effect
+			laserSound = Content.Load<SoundEffect>("Sound/laserFire");
+			explosionSound = Content.Load<SoundEffect>("Sound/explosion");
+
+			// Start the music right away
+			PlayMusic(gameplayMusic);
+
+			// Load the score font
+			font = Content.Load<SpriteFont>("Font/gameFont");
+		}
+
+		private void PlayMusic(Song song)
+		{
+			// Due to the way the MediaPlayer plays music,
+			// we have to catch the exception. Music will play when the game is not tethered
+			try
+			{
+				// Play the music
+				MediaPlayer.Play(song);
+
+				// Loop the currently playing song
+				MediaPlayer.IsRepeating = true;
+			}
+			catch { }
 		}
 
 		private void UpdatePlayer(GameTime gameTime)
@@ -182,6 +229,15 @@ namespace FirstGame.Controller
 
 				// Add the projectile, but add it to the front and center of the player
 				AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+				// Play the laser sound
+				laserSound.Play();
+			}
+
+			// reset score if player health goes to zero
+			if (player.Health <= 0)
+			{
+				player.Health = 100;
+				score = 0;
 			}
 		}
 
@@ -339,6 +395,10 @@ namespace FirstGame.Controller
 					{
 						// Add an explosion
 						AddExplosion(enemies[i].Position);
+						// Play the explosion sound
+						explosionSound.Play();
+						//Add to the player's score
+						score += enemies[i].Value;
 					}
 					enemies.RemoveAt(i);
 				} 
@@ -392,7 +452,6 @@ namespace FirstGame.Controller
 		protected override void Draw (GameTime gameTime)
 		{
 			graphics.GraphicsDevice.Clear (Color.White);
-            
 			//TODO: Add your drawing code here
 			// Start drawing
 			spriteBatch.Begin();
@@ -415,18 +474,23 @@ namespace FirstGame.Controller
 				projectiles[i].Draw(spriteBatch);
 			}
 
+			// Draw the explosions
+			for (int i = 0; i < explosions.Count; i++)
+			{
+				explosions[i].Draw(spriteBatch);
+			}
+				
+			// Draw the score
+			spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+			// Draw the player health
+			spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+
 			// Draw the Player
 			player.Draw(spriteBatch);
 
 			// Stop drawing
 			spriteBatch.End();
 
-			// Draw the explosions
-			for (int i = 0; i < explosions.Count; i++)
-			{
-				explosions[i].Draw(spriteBatch);
-			}
-            
 			base.Draw (gameTime);
 		}
 	}
