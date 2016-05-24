@@ -68,7 +68,7 @@ namespace FirstGame
 
 
 			// Set the score value of the enemy
-			Value = 1234567890; //100
+			Value = 100; //100
 
 		}
 

@@ -139,8 +139,8 @@ namespace FirstGame.Controller
 
 			// Load the player resources
 			Animation playerAnimation = new Animation();
-			Texture2D playerTexture = Content.Load<Texture2D>("Animation/ImportedSpinJump");
-			playerAnimation.Initialize(playerTexture, Vector2.Zero, 93, 114, 16, 20, Color.White, 1f, true);
+			Texture2D playerTexture = Content.Load<Texture2D>("Animation/ImportedMetroid");
+			playerAnimation.Initialize(playerTexture, Vector2.Zero, 78, 86, 20, 60, Color.White, 1f, true);
 
 			Vector2 playerPosition = new Vector2 (GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y
 				+ GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
@@ -152,9 +152,9 @@ namespace FirstGame.Controller
 
 			mainBackground = Content.Load<Texture2D>("Texture/ImportedMain");
 
-			enemyTexture = Content.Load<Texture2D>("Animation/ImportedMetroid");
+			enemyTexture = Content.Load<Texture2D>("Animation/ImportedParasite");
 
-			projectileTexture = Content.Load<Texture2D>("Texture/ImportedMissile");
+			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLaser");
 
 			explosionTexture = Content.Load<Texture2D>("Animation/ImportedExplode");
 
@@ -218,8 +218,8 @@ namespace FirstGame.Controller
 			}
 
 			// Make sure that the player does not go out of bounds
-			player.Position.X = MathHelper.Clamp(player.Position.X, 0,GraphicsDevice.Viewport.Width - player.Width);
-			player.Position.Y = MathHelper.Clamp(player.Position.Y, 0,GraphicsDevice.Viewport.Height - player.Height);
+			player.Position.X = MathHelper.Clamp(player.Position.X, player.Width/2,GraphicsDevice.Viewport.Width - player.Width/2);
+			player.Position.Y = MathHelper.Clamp(player.Position.Y, player.Height/2,GraphicsDevice.Viewport.Height - player.Height);
 
 			// Fire only every interval we set as the fireTime
 			if (gameTime.TotalGameTime - previousFireTime > fireTime)
@@ -234,7 +234,7 @@ namespace FirstGame.Controller
 			}
 
 			// reset score if player health goes to zero
-			if (player.Health <= 0)
+			if (player.Health <= 0) 
 			{
 				player.Health = 100;
 				score = 0;
@@ -297,16 +297,16 @@ namespace FirstGame.Controller
 			// Only create the rectangle once for the player
 			rectangle1 = new Rectangle((int)player.Position.X,
 				(int)player.Position.Y,
-				player.Width,
-				player.Height);
+				player.Width-2,
+				player.Height-2);
 
 			// Do the collision between the player and the enemies
 			for (int i = 0; i <enemies.Count; i++)
 			{
 				rectangle2 = new Rectangle((int)enemies[i].Position.X,
 					(int)enemies[i].Position.Y,
-					enemies[i].Width,
-					enemies[i].Height);
+					enemies[i].Width-2,
+					enemies[i].Height-2);
 
 				// Determine if the two objects collided with each
 				// other
@@ -357,7 +357,7 @@ namespace FirstGame.Controller
 			Animation enemyAnimation = new Animation();
 
 			// Initialize the animation with the correct animation information
-			enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 78, 86, 20, 60,Color.White, 1f, true);
+			enemyAnimation.Initialize(enemyTexture, Vector2.Zero, 80, 80, 8, 60,Color.White, 1f, true);
 
 			// Randomly generate the position of the enemy
 			Vector2 position = new Vector2(GraphicsDevice.Viewport.Width +enemyTexture.Width / 2, random.Next(100, GraphicsDevice.Viewport.Height -100));
