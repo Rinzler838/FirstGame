@@ -75,6 +75,12 @@ namespace FirstGame.Controller
 		// The font used to display UI elements
 		SpriteFont font;
 
+		Texture2D freezeTexture;
+		List<Projectile> freezeProjectiles;
+
+		Texture2D bombTexture;
+		List<Projectile> bombProjectiles;
+
 
 		public SpaceGame ()
 		{
@@ -114,6 +120,10 @@ namespace FirstGame.Controller
 			random = new Random();
 
 			projectiles = new List<Projectile>();
+
+			freezeProjectiles = new List<Projectile>();
+
+			bombProjectiles = new List<Projectile>();
 
 			// Set the laser to fire every quarter second
 			fireTime = TimeSpan.FromSeconds(.15f);
@@ -155,6 +165,10 @@ namespace FirstGame.Controller
 			enemyTexture = Content.Load<Texture2D>("Animation/ImportedParasite");
 
 			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLaser");
+
+			freezeTexture = Content.Load<Texture2D>("Texture/ImportedBeam");
+
+			//bombTexture = Content.Load<Texture2D> ("Texture/ImportedBomb");
 
 			explosionTexture = Content.Load<Texture2D>("Animation/ImportedExplode");
 
@@ -481,9 +495,9 @@ namespace FirstGame.Controller
 			}
 				
 			// Draw the score
-			spriteBatch.DrawString(font, "score: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+			spriteBatch.DrawString(font, "SCORE: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
 			// Draw the player health
-			spriteBatch.DrawString(font, "health: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+			spriteBatch.DrawString(font, "HP: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
 
 			// Draw the Player
 			player.Draw(spriteBatch);
