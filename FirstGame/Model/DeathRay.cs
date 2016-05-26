@@ -1,16 +1,14 @@
-﻿// Projectile.cs
-//Using declarations
-using System;
+﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace FirstGame
 {
-	public class Projectile
+	public class DeathRay
 	{
-		public Projectile ()
+		public DeathRay ()
 		{
-			
+
 		}
 
 		// Image representing the Projectile
@@ -52,9 +50,9 @@ namespace FirstGame
 
 			Active = true;
 
-			Damage = 2; //2
+			Damage = 100; //2
 
-			projectileMoveSpeed = 20f; //20
+			projectileMoveSpeed = 25f; //20
 		}
 
 		public void Update()

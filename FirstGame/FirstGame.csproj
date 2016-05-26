@@ -52,10 +52,10 @@
     <Compile Include="Controller\SpaceGame.cs" />
     <Compile Include="View\Animation.cs" />
     <Compile Include="View\ParallaxingBackground.cs" />
-    <Compile Include="Model\Enemy.cs" />
     <Compile Include="Model\Projectile.cs" />
     <Compile Include="Model\FreezeBeam.cs" />
-    <Compile Include="Model\Bomb.cs" />
+    <Compile Include="Model\Enemy.cs" />
+    <Compile Include="Model\DeathRay.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Icon.png" />

@@ -78,8 +78,8 @@ namespace FirstGame.Controller
 		Texture2D freezeTexture;
 		List<Projectile> freezeProjectiles;
 
-		Texture2D bombTexture;
-		List<Projectile> bombProjectiles;
+		Texture2D rayTexture;
+		List<Projectile> rayProjectiles;
 
 
 		public SpaceGame ()
@@ -101,7 +101,7 @@ namespace FirstGame.Controller
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 10f; //4.5
+			playerMoveSpeed = 4.5f; //4.5
 
 			//Initialize background layers
 			bgLayer1 = new ParallaxingBackground();
@@ -114,7 +114,7 @@ namespace FirstGame.Controller
 			previousSpawnTime = TimeSpan.Zero;
 
 			// Used to determine how fast enemy respawns
-			enemySpawnTime = TimeSpan.FromSeconds(1.0f);
+			enemySpawnTime = TimeSpan.FromSeconds(1f); //1
 
 			// Initialize our random number generator
 			random = new Random();
@@ -123,10 +123,10 @@ namespace FirstGame.Controller
 
 			freezeProjectiles = new List<Projectile>();
 
-			bombProjectiles = new List<Projectile>();
+			rayProjectiles = new List<Projectile>();
 
 			// Set the laser to fire every quarter second
-			fireTime = TimeSpan.FromSeconds(.15f);
+			fireTime = TimeSpan.FromSeconds(0.15f); //0.15
 
 			explosions = new List<Animation>();
 
@@ -164,11 +164,11 @@ namespace FirstGame.Controller
 
 			enemyTexture = Content.Load<Texture2D>("Animation/ImportedParasite");
 
-			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLaser");
+			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLazer");
 
 			freezeTexture = Content.Load<Texture2D>("Texture/ImportedBeam");
 
-			//bombTexture = Content.Load<Texture2D> ("Texture/ImportedBomb");
+			rayTexture = Content.Load<Texture2D> ("Texture/ImportedLaser");
 
 			explosionTexture = Content.Load<Texture2D>("Animation/ImportedExplode");
 
@@ -242,7 +242,7 @@ namespace FirstGame.Controller
 				previousFireTime = gameTime.TotalGameTime;
 
 				// Add the projectile, but add it to the front and center of the player
-				AddProjectile(player.Position + new Vector2(player.Width / 2, 0));
+				AddProjectile(player.Position + new Vector2(player.Width-10, 0));
 				// Play the laser sound
 				laserSound.Play();
 			}
@@ -252,6 +252,19 @@ namespace FirstGame.Controller
 			{
 				player.Health = 100;
 				score = 0;
+			}
+
+			if (score > 900)
+			{
+				projectileTexture = freezeTexture;
+				fireTime = TimeSpan.FromSeconds (0.75f);
+
+			}
+
+			if (score > 9900)
+			{
+				projectileTexture = rayTexture;
+				fireTime = TimeSpan.FromSeconds (0.01f);
 			}
 		}
 
@@ -311,16 +324,16 @@ namespace FirstGame.Controller
 			// Only create the rectangle once for the player
 			rectangle1 = new Rectangle((int)player.Position.X,
 				(int)player.Position.Y,
-				player.Width-2,
-				player.Height-2);
+				player.Width-10,
+				player.Height-10);
 
 			// Do the collision between the player and the enemies
 			for (int i = 0; i <enemies.Count; i++)
 			{
 				rectangle2 = new Rectangle((int)enemies[i].Position.X,
 					(int)enemies[i].Position.Y,
-					enemies[i].Width-2,
-					enemies[i].Height-2);
+					enemies[i].Width-10,
+					enemies[i].Height-10);
 
 				// Determine if the two objects collided with each
 				// other
@@ -498,6 +511,11 @@ namespace FirstGame.Controller
 			spriteBatch.DrawString(font, "SCORE: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
 			// Draw the player health
 			spriteBatch.DrawString(font, "HP: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+
+			if (score > 900)
+			{
+				spriteBatch.DrawString(font, "WEAPON: Freeze Beam", new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 60), Color.White);
+			}
 
 			// Draw the Player
 			player.Draw(spriteBatch);

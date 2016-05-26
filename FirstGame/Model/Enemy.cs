@@ -64,8 +64,7 @@ namespace FirstGame
 			Damage = 10; //10
 
 			// Set how fast the enemy moves
-			enemyMoveSpeed = 10f; //6
-
+			enemyMoveSpeed = 6f; //6
 
 			// Set the score value of the enemy
 			Value = 100; //100
