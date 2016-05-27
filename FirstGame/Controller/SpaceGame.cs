@@ -41,45 +41,49 @@ namespace FirstGame.Controller
 		private ParallaxingBackground bgLayer2;
 
 		// Enemies
-		Texture2D enemyTexture;
-		List<Enemy> enemies;
+		private Texture2D enemyTexture;
+		private List<Enemy> enemies;
 
 		// The rate at which the enemies appear
-		TimeSpan enemySpawnTime;
-		TimeSpan previousSpawnTime;
+		private TimeSpan enemySpawnTime;
+		private TimeSpan previousSpawnTime;
 
 		// A random number generator
-		Random random;
+		private Random random;
 
-		Texture2D projectileTexture;
-		List<Projectile> projectiles;
+		private Texture2D projectileTexture;
+		private List<Projectile> projectiles;
 
 		// The rate of fire of the player laser
-		TimeSpan fireTime;
-		TimeSpan previousFireTime;
+		private TimeSpan fireTime;
+		private TimeSpan previousFireTime;
 
-		Texture2D explosionTexture;
-		List<Animation> explosions;
+		private Texture2D explosionTexture;
+		private List<Animation> explosions;
 
 		// The sound that is played when a laser is fired
-		SoundEffect laserSound;
+		private SoundEffect laserSound;
 
 		// The sound used when the player or an enemy dies
-		SoundEffect explosionSound;
+		private SoundEffect explosionSound;
 
 		// The music played during gameplay
-		Song gameplayMusic;
+		private Song gameplayMusic;
 
 		//Number that holds the player score
-		long score;
+		private long score;
 		// The font used to display UI elements
-		SpriteFont font;
+		private SpriteFont font;
 
-		Texture2D freezeTexture;
-		List<Projectile> freezeProjectiles;
+		private Texture2D freezeTexture;
+		private TimeSpan freezeTime;
+		private TimeSpan previousFreezeTime;
+		private List<Projectile> freezeProjectiles;
 
-		Texture2D rayTexture;
-		List<Projectile> rayProjectiles;
+		private Texture2D rayTexture;
+		private TimeSpan rayTime;
+		private TimeSpan previousRayTime;
+		private List<Projectile> rayProjectiles;
 
 
 		public SpaceGame ()
@@ -122,8 +126,10 @@ namespace FirstGame.Controller
 			projectiles = new List<Projectile>();
 
 			freezeProjectiles = new List<Projectile>();
+			freezeTime = TimeSpan.FromSeconds (0.5f);
 
 			rayProjectiles = new List<Projectile>();
+			rayTime = TimeSpan.FromSeconds (0.05f);
 
 			// Set the laser to fire every quarter second
 			fireTime = TimeSpan.FromSeconds(0.15f); //0.15
@@ -210,13 +216,11 @@ namespace FirstGame.Controller
 			player.Position.Y -= currentGamePadState.ThumbSticks.Left.Y *playerMoveSpeed;
 
 			// Use the Keyboard / Dpad
-			if (currentKeyboardState.IsKeyDown(Keys.Left) ||
-				currentGamePadState.DPad.Left == ButtonState.Pressed)
+			if (currentKeyboardState.IsKeyDown(Keys.Left) || currentGamePadState.DPad.Left == ButtonState.Pressed)
 			{
 				player.Position.X -= playerMoveSpeed;
 			}
-			if (currentKeyboardState.IsKeyDown(Keys.Right) ||
-				currentGamePadState.DPad.Right == ButtonState.Pressed)
+			if (currentKeyboardState.IsKeyDown(Keys.Right) || currentGamePadState.DPad.Right == ButtonState.Pressed)
 			{
 				player.Position.X += playerMoveSpeed;
 			}
@@ -254,17 +258,16 @@ namespace FirstGame.Controller
 				score = 0;
 			}
 
-			if (score > 900)
+			if (gameTime.TotalGameTime - previousFreezeTime > fireTime && currentKeyBoardState.IsKeyDown ((Keys.F)))
 			{
-				projectileTexture = freezeTexture;
-				fireTime = TimeSpan.FromSeconds (0.75f);
-
+				previousFreezeTime = gameTime.TotalGameTime;
+				AddFreezeBeam(player.Position + new Vector2(player.Width-10, 0));
 			}
 
-			if (score > 1000)
+			if (gameTime.TotalGameTime - previousRayTime > fireTime && currentKeyBoardState.IsKeyDown ((Keys.D)))
 			{
-				projectileTexture = rayTexture;
-				fireTime = TimeSpan.FromSeconds (0.01f);
+				previousRayTime = gameTime.TotalGameTime;
+				AddDeathRay(player.Position + new Vector2(player.Width-10, 0));
 			}
 		}
 
@@ -472,6 +475,48 @@ namespace FirstGame.Controller
 			}
 		}
 
+		private void AddFreezeBeam(Vector2 position)
+		{
+			FreezeBeam frezeBeam = new FreezeBeam();
+			freezeBeam.Initialize(GraphicsDevice.Viewport, freezeTexture, position);
+			freezeProjectile.Add(freezeBeam);
+		}
+
+		private void UpdateFreezeBeams()
+		{
+			// Update the Projectiles
+			for (int i = freezeProjectiles.Count - 1; i >= 0; i--) 
+			{
+				freezeProjectiles[i].Update();
+
+				if (freezeProjectiles[i].Active == false)
+				{
+					freezeProjectiles.RemoveAt(i);
+				} 
+			}
+		}
+
+		private void AddDeathRay(Vector2 position)
+		{
+			DeathRay deathRay = new DeathRay();
+			deathRay.Initialize(GraphicsDevice.Viewport, rayTexture, position);
+			rayProjectile.Add(freezeBeam);
+		}
+
+		private void UpdateDeatRays()
+		{
+			// Update the Projectiles
+			for (int i = rayProjectiles.Count - 1; i >= 0; i--) 
+			{
+				rayProjectiles[i].Update();
+
+				if (rayProjectiles[i].Active == false)
+				{
+					rayrojectiles.RemoveAt(i);
+				} 
+			}
+		}
+
 		/// <summary>
 		/// This is called when the game should draw itself.
 		/// </summary>
@@ -506,16 +551,16 @@ namespace FirstGame.Controller
 			{
 				explosions[i].Draw(spriteBatch);
 			}
+
+			for (int index = 0; index < freezeProjectiles.Count; index++)
+			{
+				freezeProjectile [index].Draw (spriteBatch);		
+			}
 				
 			// Draw the score
 			spriteBatch.DrawString(font, "SCORE: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
 			// Draw the player health
 			spriteBatch.DrawString(font, "HP: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
-
-			if (score > 0)
-			{
-				spriteBatch.DrawString(font, "WEAPON: ", new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 60), Color.White);
-			}
 
 			// Draw the Player
 			player.Draw(spriteBatch);

@@ -49,11 +49,8 @@ namespace FirstGame
 			Texture = texture;
 			Position = position;
 			this.viewport = viewport;
-
 			Active = true;
-
 			Damage = 2; //2
-
 			projectileMoveSpeed = 20f; //20
 		}
 

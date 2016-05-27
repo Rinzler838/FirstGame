@@ -6,59 +6,60 @@ namespace FirstGame
 {
 	public class DeathRay
 	{
-		public DeathRay ()
-		{
-
-		}
-
 		// Image representing the Projectile
-		public Texture2D Texture;
+		public Texture2D texture;
 
 		// Position of the Projectile relative to the upper left side of the screen
-		public Vector2 Position;
+		public Vector2 position;
 
-		// State of the Projectile
-		public bool Active;
-
-		// The amount of damage the projectile can inflict to an enemy
-		public int Damage;
-
-		// Represents the viewable boundary of the game
-		Viewport viewport;
-
-		// Get the width of the projectile ship
-		public int Width
+		public Vector2 Position
 		{
-			get { return Texture.Width; }
+			get { return position; }
+			set { position = value; }
 		}
 
-		// Get the height of the projectile ship
-		public int Height
+		// The amount of damage the projectile can inflict to an enemy
+		public int damage;
+
+		public int Damage
 		{
-			get { return Texture.Height; }
+			get { return damage; }
+			set { damage = value; }
 		}
 
 		// Determines how fast the projectile moves
-		float projectileMoveSpeed;
+		public float projectileMoveSpeed;
 
-
-		public void Initialize(Viewport viewport, Texture2D texture, Vector2 position)
+		public float ProjectileMoveSpeed
 		{
-			Texture = texture;
-			Position = position;
+			get { return projectileMoveSpeed; }
+			set { projectileMoveSpeed = value; }
+		}
+
+		public ViewPort viewport;
+
+		public bool Active;
+
+		public bool Actile
+		{
+			get { return active; }
+			set { active = value; }
+		}
+
+		public void Initialize(Texture2D texture, Vector2 position)
+		{
+			this.texture = texture;
+			this.position = position;
+			this.damage = 500;
+			this.projectileMoveSpeed = 50f; 
 			this.viewport = viewport;
-
-			Active = true;
-
-			Damage = 100; //2
-
-			projectileMoveSpeed = 25f; //20
+			this.active = true;
 		}
 
 		public void Update()
 		{
 			// Projectiles always move to the right
-			Position.X += projectileMoveSpeed;
+			position.X += projectileMoveSpeed;
 
 			// Deactivate the bullet if it goes out of screen
 			if (Position.X + Texture.Width / 2 > viewport.Width)
@@ -67,8 +68,7 @@ namespace FirstGame
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(Texture, Position, null, Color.White, 0f,
-				new Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, position, null, Color.White, 0f, new Vector2(Width / 2, Height / 2), 1f, SpriteEffects.None, 0f);
 		}
 	}
 }
