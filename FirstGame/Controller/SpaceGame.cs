@@ -261,7 +261,7 @@ namespace FirstGame.Controller
 
 			}
 
-			if (score > 9900)
+			if (score > 1000)
 			{
 				projectileTexture = rayTexture;
 				fireTime = TimeSpan.FromSeconds (0.01f);
@@ -512,9 +512,9 @@ namespace FirstGame.Controller
 			// Draw the player health
 			spriteBatch.DrawString(font, "HP: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
 
-			if (score > 900)
+			if (score > 0)
 			{
-				spriteBatch.DrawString(font, "WEAPON: Freeze Beam", new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 60), Color.White);
+				spriteBatch.DrawString(font, "WEAPON: ", new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 60), Color.White);
 			}
 
 			// Draw the Player

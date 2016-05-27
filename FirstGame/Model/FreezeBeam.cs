@@ -6,16 +6,23 @@ namespace FirstGame
 {
 	public class FreezeBeam
 	{
-		public FreezeBeam ()
-		{
-
-		}
-
 		// Image representing the Projectile
 		public Texture2D Texture;
 
+		public Texture 2D Texture
+		{
+			get { return texture; }
+			set { texture = value; }
+		}
+
 		// Position of the Projectile relative to the upper left side of the screen
 		public Vector2 Position;
+
+		public Vector2 Position
+		{
+			get { return position; }
+			set { position = value; }
+		}
 
 		// State of the Projectile
 		public bool Active;
@@ -23,26 +30,17 @@ namespace FirstGame
 		// The amount of damage the projectile can inflict to an enemy
 		public int Damage;
 
-		// Represents the viewable boundary of the game
-		Viewport viewport;
-
-		// Get the width of the projectile ship
-		public int Width
+		public int Damage
 		{
-			get { return Texture.Width; }
-		}
-
-		// Get the height of the projectile ship
-		public int Height
-		{
-			get { return Texture.Height; }
+			get { return damage; }
+			set { damage = value; }
 		}
 
 		// Determines how fast the projectile moves
 		float projectileMoveSpeed;
 
 
-		public void Initialize(Viewport viewport, Texture2D texture, Vector2 position)
+		public void Initialize(Texture2D texture, Vector2 position)
 		{
 			Texture = texture;
 			Position = position;
