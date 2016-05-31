@@ -8,7 +8,7 @@ namespace FirstGame
 {
 	public class Projectile
 	{
-		public Projectile ()
+		public Projectile()
 		{
 			
 		}

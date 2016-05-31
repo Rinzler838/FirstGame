@@ -78,12 +78,12 @@ namespace FirstGame.Controller
 		private Texture2D freezeTexture;
 		private TimeSpan freezeTime;
 		private TimeSpan previousFreezeTime;
-		private List<Projectile> freezeProjectiles;
+		private List<FreezeBeam> freezeProjectiles;
 
 		private Texture2D rayTexture;
 		private TimeSpan rayTime;
 		private TimeSpan previousRayTime;
-		private List<Projectile> rayProjectiles;
+		private List<DeathRay> rayProjectiles;
 
 
 		public SpaceGame ()
@@ -105,7 +105,7 @@ namespace FirstGame.Controller
 			player = new Player ();
 
 			// Set a constant player move speed
-			playerMoveSpeed = 4.5f; //4.5
+			playerMoveSpeed = 5f; //4.5
 
 			//Initialize background layers
 			bgLayer1 = new ParallaxingBackground();
@@ -118,17 +118,17 @@ namespace FirstGame.Controller
 			previousSpawnTime = TimeSpan.Zero;
 
 			// Used to determine how fast enemy respawns
-			enemySpawnTime = TimeSpan.FromSeconds(1f); //1
+			enemySpawnTime = TimeSpan.FromSeconds(0.5f); //1
 
 			// Initialize our random number generator
 			random = new Random();
 
 			projectiles = new List<Projectile>();
 
-			freezeProjectiles = new List<Projectile>();
+			freezeProjectiles = new List<FreezeBeam>();
 			freezeTime = TimeSpan.FromSeconds (0.5f);
 
-			rayProjectiles = new List<Projectile>();
+			rayProjectiles = new List<DeathRay>();
 			rayTime = TimeSpan.FromSeconds (0.05f);
 
 			// Set the laser to fire every quarter second
@@ -172,7 +172,7 @@ namespace FirstGame.Controller
 
 			projectileTexture = Content.Load<Texture2D>("Texture/ImportedLazer");
 
-			freezeTexture = Content.Load<Texture2D>("Texture/ImportedBeam");
+			freezeTexture = Content.Load<Texture2D>("Texture/ImportedFreeze");
 
 			rayTexture = Content.Load<Texture2D> ("Texture/ImportedLaser");
 
@@ -239,18 +239,6 @@ namespace FirstGame.Controller
 			player.Position.X = MathHelper.Clamp(player.Position.X, player.Width/2,GraphicsDevice.Viewport.Width - player.Width/2);
 			player.Position.Y = MathHelper.Clamp(player.Position.Y, player.Height/2,GraphicsDevice.Viewport.Height - player.Height);
 
-			// Fire only every interval we set as the fireTime
-			if (gameTime.TotalGameTime - previousFireTime > fireTime)
-			{
-				// Reset our current time
-				previousFireTime = gameTime.TotalGameTime;
-
-				// Add the projectile, but add it to the front and center of the player
-				AddProjectile(player.Position + new Vector2(player.Width-10, 0));
-				// Play the laser sound
-				laserSound.Play();
-			}
-
 			// reset score if player health goes to zero
 			if (player.Health <= 0) 
 			{
@@ -258,16 +246,25 @@ namespace FirstGame.Controller
 				score = 0;
 			}
 
-			if (gameTime.TotalGameTime - previousFreezeTime > fireTime && currentKeyBoardState.IsKeyDown ((Keys.F)))
+			if (gameTime.TotalGameTime - previousFireTime > fireTime && currentKeyboardState.IsKeyDown ((Keys.G)))
 			{
-				previousFreezeTime = gameTime.TotalGameTime;
-				AddFreezeBeam(player.Position + new Vector2(player.Width-10, 0));
+				previousFireTime = gameTime.TotalGameTime;
+				AddProjectile(player.Position + new Vector2(player.Width-50, 0));
+				laserSound.Play();
 			}
 
-			if (gameTime.TotalGameTime - previousRayTime > fireTime && currentKeyBoardState.IsKeyDown ((Keys.D)))
+			if (gameTime.TotalGameTime - previousFreezeTime > freezeTime && currentKeyboardState.IsKeyDown ((Keys.F)))
+			{
+				previousFreezeTime = gameTime.TotalGameTime;
+				AddFreezeBeam(player.Position + new Vector2(player.Width-50, 0));
+				laserSound.Play();
+			}
+
+			if (gameTime.TotalGameTime - previousRayTime > rayTime && currentKeyboardState.IsKeyDown ((Keys.D)))
 			{
 				previousRayTime = gameTime.TotalGameTime;
-				AddDeathRay(player.Position + new Vector2(player.Width-10, 0));
+				AddDeathRay(player.Position + new Vector2(player.Width-50, 0));
+				laserSound.Play();
 			}
 		}
 
@@ -313,6 +310,10 @@ namespace FirstGame.Controller
 
 			// Update the explosions
 			UpdateExplosions(gameTime);
+
+			UpdateFreezeBeams();
+
+			UpdateDeathRays();
             
 			base.Update (gameTime);
 		}
@@ -376,6 +377,52 @@ namespace FirstGame.Controller
 					{
 						enemies[j].Health -= projectiles[i].Damage;
 						projectiles[i].Active = false;
+					}
+				}
+			}
+
+			for (int i = 0; i < freezeProjectiles.Count; i++)
+			{
+				for (int j = 0; j < enemies.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangle1 = new Rectangle((int)freezeProjectiles[i].Position.X - 
+						freezeProjectiles[i].Width / 2,(int)freezeProjectiles[i].Position.Y - 
+						freezeProjectiles[i].Height / 2,freezeProjectiles[i].Width, freezeProjectiles[i].Height);
+
+					rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+						(int)enemies[j].Position.Y - enemies[j].Height / 2,
+						enemies[j].Width, enemies[j].Height);
+
+					// Determine if the two objects collided with each other
+					if (rectangle1.Intersects(rectangle2))
+					{
+						enemies[j].Health -= freezeProjectiles[i].Damage;
+						enemies[j].EnemyMoveSpeed = 0;
+						freezeProjectiles[i].active = false;
+					}
+				}
+			}
+
+			for (int i = 0; i < rayProjectiles.Count; i++)
+			{
+				for (int j = 0; j < enemies.Count; j++)
+				{
+					// Create the rectangles we need to determine if we collided with each other
+					rectangle1 = new Rectangle((int)rayProjectiles[i].Position.X - 
+						rayProjectiles[i].Width / 2,(int)rayProjectiles[i].Position.Y - 
+						rayProjectiles[i].Height / 2,rayProjectiles[i].Width, rayProjectiles[i].Height);
+
+					rectangle2 = new Rectangle((int)enemies[j].Position.X - enemies[j].Width / 2,
+						(int)enemies[j].Position.Y - enemies[j].Height / 2,
+						enemies[j].Width, enemies[j].Height);
+
+					// Determine if the two objects collided with each other
+					if (rectangle1.Intersects(rectangle2))
+					{
+						enemies[j].Health -= rayProjectiles[i].Damage;
+						enemies[j].Damage = 0;
+						rayProjectiles[i].active = false;
 					}
 				}
 			}
@@ -477,9 +524,9 @@ namespace FirstGame.Controller
 
 		private void AddFreezeBeam(Vector2 position)
 		{
-			FreezeBeam frezeBeam = new FreezeBeam();
+			FreezeBeam freezeBeam = new FreezeBeam();
 			freezeBeam.Initialize(GraphicsDevice.Viewport, freezeTexture, position);
-			freezeProjectile.Add(freezeBeam);
+			freezeProjectiles.Add(freezeBeam);
 		}
 
 		private void UpdateFreezeBeams()
@@ -489,7 +536,7 @@ namespace FirstGame.Controller
 			{
 				freezeProjectiles[i].Update();
 
-				if (freezeProjectiles[i].Active == false)
+				if (freezeProjectiles[i].active == false)
 				{
 					freezeProjectiles.RemoveAt(i);
 				} 
@@ -500,19 +547,19 @@ namespace FirstGame.Controller
 		{
 			DeathRay deathRay = new DeathRay();
 			deathRay.Initialize(GraphicsDevice.Viewport, rayTexture, position);
-			rayProjectile.Add(freezeBeam);
+			rayProjectiles.Add(deathRay);
 		}
 
-		private void UpdateDeatRays()
+		private void UpdateDeathRays()
 		{
 			// Update the Projectiles
 			for (int i = rayProjectiles.Count - 1; i >= 0; i--) 
 			{
 				rayProjectiles[i].Update();
 
-				if (rayProjectiles[i].Active == false)
+				if (rayProjectiles[i].active == false)
 				{
-					rayrojectiles.RemoveAt(i);
+					rayProjectiles.RemoveAt(i);
 				} 
 			}
 		}
@@ -554,13 +601,22 @@ namespace FirstGame.Controller
 
 			for (int index = 0; index < freezeProjectiles.Count; index++)
 			{
-				freezeProjectile [index].Draw (spriteBatch);		
+				freezeProjectiles [index].Draw (spriteBatch);		
+			}
+
+			for (int index = 0; index < rayProjectiles.Count; index++)
+			{
+				rayProjectiles [index].Draw (spriteBatch);		
 			}
 				
 			// Draw the score
 			spriteBatch.DrawString(font, "SCORE: " + score, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
 			// Draw the player health
 			spriteBatch.DrawString(font, "HP: " + player.Health, new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+
+			spriteBatch.DrawString(font, "G: Regular", new Vector2(650, GraphicsDevice.Viewport.TitleSafeArea.Y), Color.White);
+			spriteBatch.DrawString(font, "F: Freeze", new Vector2(650, GraphicsDevice.Viewport.TitleSafeArea.Y + 30), Color.White);
+			spriteBatch.DrawString(font, "D: Death", new Vector2(650, GraphicsDevice.Viewport.TitleSafeArea.Y + 60), Color.White);
 
 			// Draw the Player
 			player.Draw(spriteBatch);

@@ -3,11 +3,11 @@
   <MonoDevelop.Ide.Workbench ActiveDocument="FirstGame/Controller/SpaceGame.cs">
     <Files>
       <File FileName="FirstGame/Model/Player.cs" Line="64" Column="61" />
-      <File FileName="FirstGame/Controller/SpaceGame.cs" Line="564" Column="4" />
-      <File FileName="FirstGame/Model/Enemy.cs" Line="28" Column="21" />
-      <File FileName="FirstGame/Model/FreezeBeam.cs" Line="39" Column="10" />
-      <File FileName="FirstGame/Model/DeathRay.cs" Line="54" Column="33" />
-      <File FileName="FirstGame/Model/Projectile.cs" Line="53" Column="19" />
+      <File FileName="FirstGame/Controller/SpaceGame.cs" Line="565" Column="4" />
+      <File FileName="FirstGame/Model/Enemy.cs" Line="73" Column="5" />
+      <File FileName="FirstGame/Model/FreezeBeam.cs" Line="74" Column="33" />
+      <File FileName="FirstGame/Model/DeathRay.cs" Line="71" Column="33" />
+      <File FileName="FirstGame/Model/Projectile.cs" Line="46" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

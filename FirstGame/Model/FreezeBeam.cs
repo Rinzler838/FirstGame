@@ -27,6 +27,20 @@ namespace FirstGame
 			set { damage = value; }
 		}
 
+		private int width;
+
+		public int Width
+		{
+			get { return texture.Width; }
+		}
+			
+		private int height;
+
+		public int Height
+		{
+			get { return texture.Height; }
+		}
+
 		// Determines how fast the projectile moves
 		public float projectileMoveSpeed;
 
@@ -36,22 +50,28 @@ namespace FirstGame
 			set { projectileMoveSpeed = value; }
 		}
 
-		public ViewPort viewport;
+		private Viewport viewport;
 
-		public bool Active;
+		public Viewport Viewport
+		{
+			get { return viewport; }
+			set { viewport = value; }
+		}
 
-		public bool Actile
+		public bool active;
+
+		public bool Active
 		{
 			get { return active; }
 			set { active = value; }
 		}
 			
-		public void Initialize(Viewport viewposrt, Texture2D texture, Vector2 position)
+		public void Initialize(Viewport viewport, Texture2D texture, Vector2 position)
 		{
 			this.texture = texture;
 			this.position = position;
-			this.damage = 0; //2
-			this.projectileMoveSpeed = 5f; //20
+			this.damage = 1; //2
+			this.projectileMoveSpeed = 10f; //20
 			this.viewport = viewport;
 			this.active = true;
 		}
@@ -61,16 +81,18 @@ namespace FirstGame
 			// Projectiles always move to the right
 			position.X += projectileMoveSpeed;
 
-			position.Y += 0.1;
+			position.Y += 0.1f;
 
 			// Deactivate the bullet if it goes out of screen
-			if (Position.X + Texture.Width / 2 > viewport.Width)
-				Active = false;
+			if (Position.X + texture.Width / 2 > viewport.Width) 
+			{
+				active = false;
+			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
 		{
-			spriteBatch.Draw(texture, position, null, Color.White, position.Y*3f,Vector2.Zero, 2f, SpriteEffects.None, 0f);
+			spriteBatch.Draw(texture, position, null, Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 		}
 	}
 }

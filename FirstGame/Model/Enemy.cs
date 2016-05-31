@@ -43,7 +43,13 @@ namespace FirstGame
 		}
 
 		// The speed at which the enemy moves
-		float enemyMoveSpeed;
+		private float enemyMoveSpeed;
+
+		public float EnemyMoveSpeed
+		{
+			get { return enemyMoveSpeed; }
+			set { enemyMoveSpeed = value; }
+		}
 
 		public void Initialize(Animation animation,Vector2 position)
 		{
@@ -64,7 +70,7 @@ namespace FirstGame
 			Damage = 10; //10
 
 			// Set how fast the enemy moves
-			enemyMoveSpeed = 6f; //6
+			EnemyMoveSpeed = 6f; //6
 
 			// Set the score value of the enemy
 			Value = 100; //100

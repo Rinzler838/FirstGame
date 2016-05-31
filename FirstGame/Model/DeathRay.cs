@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+
 namespace FirstGame
 {
 	public class DeathRay
@@ -27,6 +28,16 @@ namespace FirstGame
 			set { damage = value; }
 		}
 
+		public int Width
+		{
+			get { return texture.Width; }
+		}
+
+		public int Height
+		{
+			get { return texture.Height; }
+		}
+
 		// Determines how fast the projectile moves
 		public float projectileMoveSpeed;
 
@@ -36,22 +47,28 @@ namespace FirstGame
 			set { projectileMoveSpeed = value; }
 		}
 
-		public ViewPort viewport;
+		private Viewport viewport;
 
-		public bool Active;
+		public Viewport Viewport
+		{
+			get { return viewport; }
+			set { viewport = value; }
+		}
 
-		public bool Actile
+		public bool active;
+
+		public bool Active
 		{
 			get { return active; }
 			set { active = value; }
 		}
 
-		public void Initialize(Texture2D texture, Vector2 position)
+		public void Initialize(Viewport viewport, Texture2D texture, Vector2 position)
 		{
 			this.texture = texture;
 			this.position = position;
 			this.damage = 500;
-			this.projectileMoveSpeed = 50f; 
+			this.projectileMoveSpeed = 20f; 
 			this.viewport = viewport;
 			this.active = true;
 		}
@@ -62,8 +79,10 @@ namespace FirstGame
 			position.X += projectileMoveSpeed;
 
 			// Deactivate the bullet if it goes out of screen
-			if (Position.X + Texture.Width / 2 > viewport.Width)
-				Active = false;
+			if (Position.X + texture.Width / 2 > viewport.Width) 
+			{
+				active = false;
+			}
 		}
 
 		public void Draw(SpriteBatch spriteBatch)
